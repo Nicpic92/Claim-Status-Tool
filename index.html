@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claims Assignment and Multi-Tab XLSX Tool (Final Stable - Fixed v6 - Persist Unassigned)</title>
+    
+    <!-- Link to Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- SheetJS (js-xlsx) CDN for reading and WRITING XLSX files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- html2pdf.js CDN for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h1>Claims Assignment and Multi-Tab XLSX Tool (Final Stable - Fixed v6 - Persist Unassigned)</h1>
+    <p class="no-pdf">This tool creates Master Workbooks for Claims and PV, and a PDF report.</p>
+
+    <div class="input-group no-pdf">
+        <label for="fileInput"><strong>1. Upload Claims File</strong> (.xlsx, .csv, .tsv, .txt accepted)</label>
+        <input type="file" id="fileInput" accept=".xlsx,.csv,.tsv,.txt" style="margin-top: 10px;">
+        
+        <p style="margin-top: 15px; text-align: center; font-weight: bold; color: #777;">-- OR --</p>
+
+        <label for="textInput"><strong>2. Paste Claims Data Below</strong> (including header row):</label>
+        <textarea id="textInput" placeholder="Paste all your claims data here..."></textarea>
+        
+        <div class="button-group">
+            <button id="analyzeButton">Analyze & Assign Claims</button>
+        </div>
+        <div id="error-message" style="color: red; margin-top: 15px; font-weight: bold;"></div>
+    </div>
+    
+    <div id="reassignment-section" class="reassign-group no-pdf" style="display: none;">
+        <h3>Dynamic Reassignment Tool</h3>
+        <p>Use this tool to override the default assignment logic for specific "Claim Edits" or "Claim Notes" combinations.</p>
+        <button id="openReassignEditor" class="reassign-button">Open Reassignment Editor</button>
+        <p id="reassignment-status" style="margin-top: 10px; font-weight: bold; color: black;">No custom rules currently applied.</p>
+        
+        <!-- JSON Master Assignment File I/O (Reinstated) -->
+        <h4 style="margin-top: 15px;">Master Assignment File (JSON) I/O</h4>
+        <div class="json-io-group">
+            <button onclick="clearAssignmentRules()" style="background-color: #f44336;">Clear ALL Rules</button>
+            <button onclick="exportAssignmentRules()" style="background-color: #009688;">Export Rules (.json)</button>
+            <label for="importRulesInput" style="flex-grow: 1;">
+                <input type="file" id="importRulesInput" accept=".json" onchange="importAssignmentRules(event)">
+            </label>
+        </div>
+        <!-- END JSON I/O -->
+    </div>
+
+    <div id="results"></div>
+</div>
+
+<!-- Reassignment Modal -->
+<div id="reassignmentModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button" onclick="document.getElementById('reassignmentModal').style.display='none'">&times;</span>
+    <h2>Assignment Rule Editor</h2>
+    <p>Change the **Assigned Team** for specific Edit/Note combinations below. The new assignment will be used for all reports/downloads after clicking "Apply Changes." **Only one row per unique Edit/Note combination is shown.**</p>
+    
+    <!-- NEW: Team Filter Dropdown -->
+    <div id="editor-filter-group">
+        <label for="teamFilterSelect">Filter by Current Assigned Team:</label>
+        <select id="teamFilterSelect">
+            <!-- Options populated by JS -->
+        </select>
+    </div>
+    
+    <div id="editor-content">
+        <!-- Editable Table will be dynamically inserted here -->
+    </div>
+    <button id="applyReassignments" class="reassign-apply-button" style="margin-top: 20px;">Apply Changes and Re-Run Reports</button>
+  </div>
+</div>
+
+<!-- Link to Custom JavaScript (Use 'defer' to ensure all HTML elements load first) -->
+<script src="script.js" defer></script>
+
+</body>
+</html>
